@@ -1,32 +1,72 @@
-Installing the **Selfhost Podcasting WordPress Plugin** is simple and can be done in two ways: directly from the WordPress Plugin Directory or by uploading the plugin's zip file. Follow the steps below to get the plugin installed and running on your website.
+Install Selfhost Podcasting like any other WordPress plugin. After activation, a **Selfhost Podcasting** menu appears in the WordPress admin sidebar.
 
-### Method 1: Install from the WordPress Plugin Directory
+## Before installing
 
-1. **Log in to Your WordPress Dashboard**: Start by logging in to the admin area of your WordPress site.
-2. **Go to the Plugins Page**: In the dashboard menu on the left, hover over **Plugins** and then click on **Add New**.
-3. **Search for the Plugin**:
-  - In the search bar at the top-right, type **Selfhost Podcasting**.
-  - Look for the **Selfhost Podcasting** plugin in the search results.
-4. **Install the Plugin**: Once you've found the correct plugin, click the **Install Now** button.
-5. **Activate the Plugin**:
-  - After the plugin is installed, the button will change to **Activate**. Click it to activate the plugin on your website.
-  - You’ll now see the Selfhost Podcasting admin page in your WordPress dashboard, and you’re ready to start using the plugin.
+Check the basic requirements:
 
-### Method 2: Install Using a Zip File
+- WordPress 6.0 or newer.
+- PHP 7.4 or newer.
+- Administrator access to WordPress.
+- HTTPS on the public site, especially before submitting feeds to podcast directories.
+- Enough server storage and bandwidth if you plan to host audio in the WordPress Media Library.
 
-If you have the plugin as a zip file (downloaded from a third-party source or your own files), follow these steps:
+For large audio files, confirm these PHP and server limits with your host:
 
-1. **Download the Plugin Zip File**: If you haven’t already, download the **Selfhost Podcasting** plugin zip file to your computer from [WordPress](https://wordpress.org/plugins/selfhost-podcasting).
-2. **Log in to Your WordPress Dashboard**: As before, log in to your WordPress admin area.
-3. **Go to the Plugins Page**:In the left-hand menu, hover over **Plugins** and click on **Add New**.
-4. **Upload the Plugin**:
-  - At the top of the page, click the **Upload Plugin** button.
-  - Click **Choose File** and select the zip file of the plugin from your computer.
-5. **Install the Plugin**: Once the zip file is uploaded, click the **Install Now** button to install the plugin.
-6. **Activate the Plugin**: After installation is complete, click the **Activate Plugin** button to enable it on your website.
+- `upload_max_filesize`
+- `post_max_size`
+- `memory_limit`
+- `max_execution_time`
+- WordPress loopback requests and WP-Cron
 
----
+These limits matter most when uploading media, importing many episodes, or moving media to S3-compatible storage.
 
-By following either of these methods, you can quickly install and activate the Selfhost Podcasting WordPress Plugin, making it ready for use on your site. After activation, you can start configuring it.
+## Install from WordPress.org
 
- 
+1. Log in to WordPress as an administrator.
+2. Go to **Plugins > Add New**.
+3. Search for **Selfhost Podcasting**.
+4. Click **Install Now**.
+5. Click **Activate**.
+6. Open **Selfhost Podcasting** from the admin menu.
+
+## Install from a ZIP file
+
+1. Download the plugin ZIP file.
+2. In WordPress admin, go to **Plugins > Add New**.
+3. Click **Upload Plugin**.
+4. Choose the ZIP file.
+5. Click **Install Now**.
+6. Click **Activate Plugin**.
+7. Open **Selfhost Podcasting** from the admin menu.
+
+## After activation
+
+After activation, the plugin registers:
+
+- The admin menu for managing podcasts.
+- The podcast and episode post types.
+- Feed routes for each podcast you create.
+- Background job handling for media uploads, deletion tasks, and missing duration repair.
+- Optional Pro routes if the Pro module is present.
+
+If your feed URL returns a 404 after creating a podcast, go to **Settings > Permalinks** and click **Save Changes**. This refreshes WordPress rewrite rules.
+
+## Recommended first configuration
+
+1. Create your first podcast.
+2. Fill in the required podcast information.
+3. Add at least one episode with a valid audio file.
+4. Open the feed preview and confirm the episode appears.
+5. Open the XML feed URL and confirm the feed loads.
+6. Submit the feed URL to podcast directories only after the feed has complete show artwork, language, category, author, and at least one published episode.
+
+## Updating the plugin
+
+Before updating a live podcast site:
+
+- Back up the database and `wp-content/uploads`.
+- Confirm any custom code that uses plugin filters or actions still works after staging tests.
+- If you use S3 storage, keep a copy of current object storage credentials.
+- If you use private podcasting, test one subscriber feed URL after the update.
+
+Plugin updates do not require recreating podcasts or resubmitting unchanged feed URLs.

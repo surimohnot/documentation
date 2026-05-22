@@ -1,86 +1,121 @@
-A Podcast in this plugin represents your show. It holds all your episodes and defines your show's brand, category, and metadata. Creating a new podcast with the **Selfhost Podcasting** plugin is simple and straightforward.
+## Create a New Podcast
 
- 
+A podcast is the show-level record. It holds the feed slug, show metadata, settings, integrations, and the list of episodes that belong to the feed.
 
-## Creating Podcast
+## Create the show
 
-1. Navigate to **Selfhost Podcasting** in your WordPress admin menu
-2. Click *Create New Podcast*
-3. Fill in the podcast information form (see fields below)
-4. Click *Create Podcast*
-5. Your new podcast is now created. The plugin will generate a **podcast feed URL**, which you can use to distribute your show to podcast platforms such as Apple Podcasts, Spotify, or any podcast app.
+1. Go to **WordPress admin > Selfhost Podcasting**.
+2. Click **Create New Podcast**.
+3. Enter the podcast name.
+4. Enter a custom slug if you want to control the feed URL. If you leave it blank, the plugin creates one from the podcast name.
+5. Create the podcast.
 
-Before submitting it, let’s complete the podcast information.
+The plugin stores the podcast as a `sh_podcasting_pod` post and saves the feed slug as podcast metadata.
 
-## Podcast Fields Explained
+## Understand the feed URL
 
-Click on the **Manage** button next to your newly created podcast.
-You’ll see three main sections on the podcast information page:
+The podcast slug becomes the feed key. With pretty permalinks enabled, the feed URL is usually:
 
-### 1. Required Information
+`https://example.com/feed/podcast-slug`
 
-This is the **minimum information** needed for your podcast to be compatible with platforms like Apple Podcasts and Spotify.
-Even if you don’t plan to upload there, it’s strongly recommended to fill these fields to make your podcast look professional and compliant.
+Without pretty permalinks, WordPress uses:
 
-**Title**
+`https://example.com/?feed=podcast-slug`
 
-- The name of your show
-- Example: "The Marketing Minute" or "Tech Talk Weekly"
-- This appears in all podcast directories
+If the podcast was migrated from another supported plugin and feed takeover is enabled, the public feed URL may be the original source plugin feed URL instead. The native Selfhost URL still exists, but the migrated source-compatible URL is used for continuity.
 
-**Description**
+## Fill in podcast information
 
-- A 2-3 sentence summary of what your show is about
-- Example: "Weekly insights on digital marketing strategies for small businesses. Join host Sarah Johnson as she interviews industry experts and shares actionable tips."
-- This is what potential listeners see when browsing directories
+After creating the podcast, open it and go to **Podcast Information**. The form is grouped by purpose:
 
-**Cover Art**
+- **Required Podcast Information**: required for a complete and valid podcast feed.
+- **Recommended Information**: useful ownership, copyright, and funding details.
+- **Podcast Management**: advanced Apple Podcasts and Podcasting 2.0 controls.
 
-- Must be a perfect square (1:1 aspect ratio)
-- **Recommended size**: 1400 x 1400 pixels (minimum 1400x1400, maximum 3000x3000)
-- **Format**: JPG or PNG
-- This is the image listeners see when browsing for podcasts
+Save changes with **Update Podcast**.
 
-**Why Square Cover Art?** Apple Podcasts and Spotify require square artwork. Non-square images may cause your podcast to be rejected from these directories.
+## Required podcast fields
 
- 
+**Podcast Name**
 
-**Website URL**
+The public title of the show. This appears in the RSS `<title>` tag and in podcast directories.
 
-- Link to your podcast's website or homepage
+**Podcast Description**
+
+The show description. The feed uses it in the RSS description and summary output. Keep it clear, useful, and free from layout-specific website content.
+
+**Podcast Cover Art**
+
+The show image. Use a square JPG or PNG. A practical target is 3000 x 3000 pixels, while 1400 x 1400 pixels is the common minimum expected by major directories.
+
+**Podcast Website**
+
+The main website associated with the podcast. This appears in the feed `<link>` tag and may appear in the preview sidebar.
 
 **Language**
 
-- The primary language of your podcast
+The primary language of the show. The plugin stores Apple-compatible language codes.
 
-**iTunes Category**
+**Apple Podcast Categories**
 
-- Choose the most relevant category for your show
-- Format: "Primary Category > Subcategory"
-- Examples:
-  - "Business > Marketing"
-  - "Technology > Tech News"
-  - "Arts > Books"
-- This helps listeners discover your show when browsing by category
+One or more Apple Podcasts categories. These are output as `itunes:category` tags.
 
-**Author**
+**Podcast Author**
 
-- Your name or your company/organization name
-- Example: "Sarah Johnson" or "Marketing Pros Media"
-- Appears as "Created by..." in podcast apps
+The public author, host, company, or organization name. This is output as `itunes:author`.
 
- 
+## Recommended podcast fields
 
-### 2. Recommended Information
+**Episodic or Serial**
 
-These fields are **optional but valuable**, as they add credibility and ownership details to your show.
-Examples include: Copyright, Owner information, Funding details etc.
+Choose **Episodic** for standalone episodes. Choose **Serial** when episodes are intended to be consumed in order, often across seasons.
 
-### 3. Advanced Information
+**Copyright**
 
-Use this section **only when necessary**.
-It includes special administrative settings such as: Marking your podcast as explicit, Removing your podcast from Apple Podcasts (if available), Redirecting your podcast to a new feed etc.
+The copyright statement for the show.
 
-Only modify these options if you are sure about their purpose.
+**Podcast Owner Name and Email**
 
-After filling in the information, click the **Update Podcast** button to save your changes.
+Owner details can be used by Apple Podcasts for contact and verification. The owner email is also used as the owner attribute for the Podcasting 2.0 locked tag when podcast locking is enabled.
+
+**Podcast Funding URL and Label**
+
+Adds Podcasting 2.0 funding information to the feed. Use this for listener support, memberships, donations, or sponsorship pages.
+
+## Advanced podcast management fields
+
+**Is Podcast Explicit?**
+
+Marks the show as explicit. Episode-level explicit flags can still be set separately.
+
+**Should Remove Podcast From Apple Podcasts?**
+
+Outputs `itunes:block` for the show. Use only when you intentionally want Apple Podcasts to stop showing the podcast.
+
+**Is Podcast Completed?**
+
+Outputs `itunes:complete`, which tells supported apps that the show is complete and no new episodes are expected.
+
+**Is Podcast Locked?**
+
+Outputs the Podcasting 2.0 `podcast:locked` tag. This can signal that the feed should not be imported elsewhere without owner control.
+
+**iTunes New Feed URL**
+
+Outputs `itunes:new-feed-url`. Use this only when permanently moving subscribers to another feed.
+
+**Verify Apple Podcast Ownership**
+
+Outputs Apple verification metadata in the feed. Use the token supplied by Apple when claiming or verifying the show.
+
+## Before submitting a new podcast
+
+Before sending the feed to directories, confirm:
+
+- The feed URL opens.
+- The browser preview looks correct.
+- The show artwork is square and large enough.
+- Required fields are complete.
+- At least one published episode exists.
+- Each episode has a valid enclosure URL, file length, type, and publish date.
+- The site is served over HTTPS.

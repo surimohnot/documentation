@@ -1,74 +1,82 @@
-Each time you create a new podcast episode using the **Selfhost Podcasting** plugin, a corresponding **WordPress custom post** is automatically created.
-This helps you manage and display your episodes directly on your website while keeping them organized and distinct from your regular blog posts.
+## Podcast Episode Custom Posts
 
----
+Selfhost Podcasting stores new manually created episodes as WordPress posts in a dedicated custom post type named `sh_podcasting_epi`.
 
-## How It Works
+This gives every episode a WordPress post URL while keeping podcast feed metadata separate from normal blog posts.
 
-- When you **create a new podcast episode**, the plugin automatically generates a **custom post type entry** for that episode.
-- The **episode title** becomes the post title.
-- The **episode description** you entered during creation is copied as the post content for the first time only.
+## How episode posts are created
 
-This means you instantly have a WordPress post that can be:
+When you create an episode in Selfhost Podcasting:
 
-- Displayed on your site’s front end
-- Shared on social media
-- Enhanced with visuals, embeds, or additional content beyond what’s in your podcast feed
+- The episode title becomes the WordPress post title.
+- The episode description is copied into the post content only when the episode is first created.
+- The feed metadata is stored separately in post meta.
+- The post is assigned to the podcast's Selfhost category term when possible.
+- Episode artwork is set as the featured image when an attachment ID is available.
 
----
+## Feed description and post content are separate
 
-## One-Time Sync Behavior
+The plugin intentionally separates:
 
-It’s important to understand how synchronization works between the **podcast feed** and the **custom post**.
+- **Episode description**: used in the podcast RSS feed.
+- **WordPress post content**: used on your website.
 
-- When you first create an episode, its description is **copied** into the new WordPress post.
-- After that, the two are **independent** — editing the description in your feed or in the WordPress post will **not** update the other.
+On first creation, the same text is copied into both places. After that, editing one does not automatically rewrite the other.
 
-This design choice differs from plugins such as *Seriously Simple Podcasting* or *Blubrry PowerPress*, which maintain live synchronization between feed data and posts.
+This lets you keep podcast feed descriptions clean while making richer website posts.
 
-We intentionally keep them separate to give you **more creative flexibility**.
+For example, the website post can contain:
 
-For example, you can add:
+- Full transcripts.
+- YouTube embeds.
+- Newsletter signup forms.
+- Product links.
+- Sponsor blocks.
+- Related posts.
+- Custom block layouts.
 
-- Embedded YouTube videos or reels
-- Forms or calls-to-action
-- Related links, transcripts, or extended notes
-- Exclusive content meant for website visitors
+These may not be suitable for RSS feed descriptions or podcast apps.
 
-These extras often don’t belong in your podcast feed description (or are not compatible with podcast feed formatting), so maintaining separation keeps your podcast feed clean and compliant.
+## Custom post type details
 
----
+The plugin registers:
 
-## Custom Post Type and Structure
+- Post type: `sh_podcasting_epi`
+- Taxonomy: `sh_podcasting_cats`
+- Supported post features: title, editor, thumbnail, excerpt
+- REST visibility: enabled for administrators, with additional privacy safeguards
+- Tags: WordPress `post_tag` support is enabled
 
-All podcast episode posts are stored in a **dedicated custom post type** created by the plugin.
-This keeps them separate from your standard blog posts and makes them easier to manage.
+The plugin also registers a hidden podcast post type:
 
-Key points:
+- Post type: `sh_podcasting_pod`
 
-- The plugin creates a **custom taxonomy term (Selfhost Category)** for each podcast.
-- Every episode post is automatically assigned to that category.
-- This makes it simple to **filter or display** all episodes belonging to a single podcast.
+This stores show-level podcast records and is managed through the Selfhost Podcasting admin screens.
 
-You can query or display these posts on your site using WordPress loops, shortcodes, or block-based templates just like any other post type.
+## Selfhost categories
 
----
+When an episode is created, the plugin creates or finds a term in `sh_podcasting_cats` using the podcast slug and assigns the episode to it.
 
-## Benefits of Custom Posts for Episodes
+This makes it easier to:
 
-- **Better organization**: Episodes are neatly grouped under their own post type and category.
-- **More flexibility**: Add custom HTML, media embeds, or integrations unique to your website.
-- **Improved visibility**: Each episode gets its own URL, improving discoverability and SEO.
-- **Freedom from feed limitations**: Feed descriptions remain clean and compatible with podcast apps, while your site version can include richer formatting.
+- Group episodes by podcast.
+- Build custom templates.
+- Query episodes from one show.
+- Display archive pages for one podcast.
 
----
+## Migrated episodes can use other post types
 
-## Example Workflow
+When the plugin migrates content from another podcast plugin, it may keep an existing source post type instead of converting the post into `sh_podcasting_epi`. This is intentional.
 
-1. Create a new podcast using the plugin.
-2. Add a new episode under that podcast.
-3. The plugin automatically creates a WordPress custom post for that episode.
-4. Go to the post editor to customize it:
-  - Add images, transcripts, or YouTube videos.
-  - Include newsletter signup forms or links.
-  - Format it for readers instead of podcast listeners.
+For example:
+
+- A PowerPress migration can attach Selfhost podcast metadata to existing source posts when there is no conflict.
+- A Seriously Simple Podcasting migration can copy source episodes into Selfhost-managed episode records.
+
+When editing an existing migrated episode, the plugin keeps the current post type if it still exists.
+
+## REST and privacy behavior
+
+Selfhost episode data is visible in the WordPress editor for administrators. The plugin restricts public REST access to Selfhost podcast and episode endpoints, and Pro private podcasting adds additional guards for private episode content.
+
+If a podcast is private, do not rely only on hiding links. Use the private podcasting features so feed and audio access are token-protected.

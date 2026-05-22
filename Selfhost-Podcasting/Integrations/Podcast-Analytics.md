@@ -1,50 +1,73 @@
-Selfhost Podcasting supports integration with third-party podcast analytics services by allowing you to specify an **analytics prefix URL** (also called a redirect prefix). Once configured, this prefix is prepended to each episode’s audio URL before being output in the RSS feed (and any embedded players). The analytics provider thus receives the download/stream request first, records metrics, and then redirects the request to the actual audio file.
+## Third-Party Podcast Analytics
 
-This method is commonly used by services like **Podtrac**, **Blubrry**, and **OP3**. Below is the full workflow: registering with a service, configuring the prefix in Selfhost Podcasting, verifying it, and viewing analytics.
+Selfhost Podcasting supports analytics services that use a redirect prefix. The plugin stores the prefix and applies it to episode audio URLs when feed output is generated.
 
-## Why Use a Prefix for Analytics?
+Common prefix-based providers include:
 
-Using a prefix has several benefits:
+- Podtrac.
+- Blubrry.
+- OP3.
 
-- It provides **independent measurement** of downloads/streams.
-- It does not require hosting provider support (as you can control the feed output).
-- It’s invisible to users: the redirection happens instantly, causing minimal latency.
+## How an analytics prefix works
 
-In practice, when a podcast client or browser requests an episode, it hits the prefix URL first (which logs the request) and then immediately issues a redirect to the real URL, delivering the media file.
+Without a prefix, an episode enclosure points directly to your media file:
 
-## Steps to Set Up Analytics Prefix in Selfhost Podcasting
+`https://media.example.com/episode-1.mp3`
 
-Below is a user guide to integrate analytics with Selfhost Podcasting:
+With an analytics prefix, the feed points to the analytics provider first:
 
-### 1. Register / Obtain your analytics prefix from the chosen service
+`https://prefix.example/redirect/https://media.example.com/episode-1.mp3`
 
-You can visit anyone of the following free analytics services to register and get prefix URL.
+The provider logs the request and redirects the listener to the real file.
 
-- Podtrac: Visit podtrac documentation to register and get prefix URL, https://podtrac.freshdesk.com/support/solutions
-- Blubrry: Blubrry analytics documentation is available at https://blubrry.com/support/statistics-documentation/
-- OP3: OP3 documentation is available at https://op3.dev/setup
+Exact prefix formatting depends on the provider. Always copy the prefix from the provider's own setup instructions.
 
-### 2. Enter the prefix in Selfhost Podcasting
+## Configure an analytics prefix
 
-1. In WordPress admin, go to **Selfhost Podcasting → Integrations** (or wherever you manage analytics settings).
-2. Find the field labeled “Analytics Prefix / Redirect Prefix / External Analytics” (or similar).
-3. Paste the analytics prefix URL you received (or selected) from the service.
-4. Save or update the podcast settings.
-5. After saving, the plugin will automatically prepend this prefix to each episode’s audio URL (enclosure) when generating the feed or embedding.
+1. Sign up with the analytics provider.
+2. Copy the redirect prefix URL they provide.
+3. Go to **Selfhost Podcasting**.
+4. Open the podcast.
+5. Go to **Connect Services**.
+6. Open **Third Party Analytics**.
+7. Paste the prefix in **Prefix URL for Analytics**.
+8. Save the integration.
 
-## Verification & Testing
+## Verify the prefix
 
-Once the prefix is set, you should verify that it is applied correctly and that analytics are working.
+1. Open the podcast feed URL.
+2. View the feed source.
+3. Find an episode `<enclosure>` tag.
+4. Confirm the `url` starts with the analytics prefix.
+5. Play or download an episode.
+6. Check the analytics provider dashboard after its normal reporting delay.
 
-- Open your podcast’s RSS in a browser, right click and select “View Page Source.”
-- Check the `<enclosure>` tags of recent episodes. The `url` attribute should start with your analytics prefix, followed by the original audio path.
+Some services take 24 to 48 hours to show processed analytics.
 
-## Sample Workflow (User Journey)
+## Important notes
 
-1. Choose analytics provider (e.g. Podtrac) and sign up/account registration.
-2. Copy your prefix URL from their dashboard (e.g. `https://dts.podtrac.com/redirect.mp3/`).
-3. Go to Selfhost Podcasting > Integrations > Thrid Party Analytics. Paste the prefix. Save settings.
-4. Verify by viewing your podcast RSS and inspecting enclosure URLs.
-5. Request or listen to an episode to generate traffic.
-6. After 24–48 hours, log into the analytics dashboard to see data.
-7. Monitor and confirm download counts, listener geography, or other stats (depending on provider).
+- The prefix should be added before public directory submission when possible.
+- If you add analytics later, directories and apps may take time to refresh cached enclosure URLs.
+- Do not combine multiple analytics prefixes unless the providers explicitly support chaining.
+- Test at least one episode in a podcast app after adding a prefix.
+- If an analytics provider is down or misconfigured, media playback can fail even when your original audio host is working.
+
+## Privacy impact
+
+When you use an analytics prefix, listener requests pass through the analytics provider. Depending on the provider, it may process request metadata such as IP-derived location, user agent, requested URL, timestamp, referrer, and range headers.
+
+Your privacy policy should identify the analytics provider if you enable one.
+
+## Troubleshooting
+
+**Enclosure URLs do not change**
+
+Confirm the prefix was saved in the podcast's **Third Party Analytics** integration, then clear any feed/page cache.
+
+**Playback breaks after adding the prefix**
+
+Check the exact prefix format. Some providers require a trailing slash or a specific path such as `redirect.mp3`.
+
+**Analytics do not appear**
+
+Confirm the feed contains prefixed URLs, play an episode through a podcast app, and wait for the provider's reporting window.
